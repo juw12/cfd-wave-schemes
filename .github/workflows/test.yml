@@ -1,0 +1,22 @@
+name: test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install numpy matplotlib
+      - name: Python port matches the Fortran output
+        run: python tests/test_schemes.py
+      - name: Fortran sources compile
+        run: |
+          gfortran fortran/upwind.f90 -o /tmp/upwind
+          gfortran fortran/maccormack.f90 -o /tmp/maccormack
